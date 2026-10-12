@@ -1,0 +1,110 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=10
+
+start() {
+
+    CHANGED="0"
+    
+    start_s
+
+    start_d
+
+    if [ "$CHANGED" != "0" ]; then
+
+        if fw4 reload-sets 2>/dev/null; then
+            /etc/init.d/firewall reload
+        fi
+
+        /etc/init.d/dnsmasq restart
+
+    fi
+
+}
+
+start_d() {
+
+    CONFDIR=$(ls -d /tmp/dnsmasq.cfg*.d 2>/dev/null | head -n 1)    
+    TMP_FILE="/tmp/vpn_domains.lst"
+    OUTPUT_FILE="$CONFDIR/domains.lst"
+    LOCAL_SOURCE="/etc/vpn_domains.lst"
+    URL_SOURCE="https://raw.githubusercontent.com/MakcTech/open-inet/refs/heads/main/domains.lst"
+
+    MD5="0"
+    if [ -f "$TMP_FILE" ]; then
+        MD5=$(md5sum "$TMP_FILE" | awk '{print $1}')
+    fi
+
+    > "$TMP_FILE"
+    if [ -f "$LOCAL_SOURCE" ]; then
+        cp "$LOCAL_SOURCE" "$TMP_FILE"
+    fi
+    
+    wget -q -O - "$URL_SOURCE" >> "$TMP_FILE"
+    
+    MD5_NEW=$(md5sum "$TMP_FILE" | awk '{print $1}')
+
+    if [ "$MD5" != "$MD5_NEW" ]; then
+        NFTSET_IPv4="4#inet#fw4#vpn_domains"
+        > "$OUTPUT_FILE"
+    
+        while IFS= read -r line || [ -n "$line" ]; do
+            domain=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+            [ -z "$domain" ] && continue         
+            echo "nftset=/$domain/$NFTSET_IPv4" >> "$OUTPUT_FILE"
+        done < "$TMP_FILE"
+
+        if dnsmasq --conf-file="$OUTPUT_FILE" --test 2>&1 | grep -q "syntax check OK"; then
+            CHANGED="1"
+        else
+            echo "Error dnsmasq check $OUTPUT_FILE"
+        fi
+    fi
+}
+
+start_s() {
+    
+    SET_NAME="vpn_domains"
+    TMP_FILE="/tmp/vpn_subnets.lst"
+    LOCAL_SOURCE="/etc/vpn_subnets.lst"
+    URL_SOURCE="https://raw.githubusercontent.com/MakcTech/open-inet/refs/heads/main/subnets.lst"
+    
+    UCI_INDEX=0
+    while true; do
+        NAME=$(uci -q get firewall.@ipset[$UCI_INDEX].name)    
+        if [ -z "$NAME" ]; then
+            echo "Error '$SET_NAME' not found firewall"
+            exit 1
+        fi
+        if [ "$NAME" = "$SET_NAME" ]; then
+            break
+        fi    
+        UCI_INDEX=$((UCI_INDEX + 1))
+    done
+    
+    MD5="0"
+    if [ -f "$TMP_FILE" ]; then
+        MD5=$(md5sum "$TMP_FILE" | awk '{print $1}')
+    fi
+
+    > "$TMP_FILE"
+    if [ -f "$LOCAL_SOURCE" ]; then
+        cp "$LOCAL_SOURCE" "$TMP_FILE"
+    fi
+    
+    wget -q -O - "$URL_SOURCE" >> "$TMP_FILE"
+    
+    MD5_NEW=$(md5sum "$TMP_FILE" | awk '{print $1}')
+
+    if [ "$MD5" != "$MD5_NEW" ]; then
+    
+	    LOADFILE=$(uci -q get firewall.@ipset[$UCI_INDEX].loadfile)
+        if [ -z "$LOADFILE" ]; then
+            uci set firewall.@ipset[$UCI_INDEX].loadfile="${TMP_FILE}"
+            uci commit firewall
+        fi
+		
+        CHANGED="1"
+    fi
+}
