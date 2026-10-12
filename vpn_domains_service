@@ -1,0 +1,19 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=10
+
+start() {
+
+    URL="https://raw.githubusercontent.com/MakcTech/open-inet/refs/heads/main/vpn_domains_download"
+    TARGET="/tmp/vpn_domains_download"
+
+    if wget --quiet "$URL" -O "$TARGET"; then    
+        chmod +x "$TARGET"    
+        "$TARGET" 2>&1 | logger -t "vpn_domains_download" &
+    else
+        logger -t github_runner "Error vpn_domains_download"
+        exit 1
+    fi
+
+}
