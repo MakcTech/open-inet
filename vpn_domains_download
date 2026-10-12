@@ -1,27 +1,4 @@
-#!/bin/sh /etc/rc.common
-
-START=99
-STOP=10
-
-start() {
-
-    CHANGED="0"
-    
-    start_s
-
-    start_d
-
-    if [ "$CHANGED" != "0" ]; then
-
-        if fw4 reload-sets 2>/dev/null; then
-            /etc/init.d/firewall reload
-        fi
-
-        /etc/init.d/dnsmasq restart
-
-    fi
-
-}
+#!/bin/sh
 
 start_d() {
 
@@ -108,3 +85,19 @@ start_s() {
         CHANGED="1"
     fi
 }
+
+CHANGED="0"
+
+start_s
+
+start_d
+
+if [ "$CHANGED" != "0" ]; then
+
+   if fw4 reload-sets 2>/dev/null; then
+        /etc/init.d/firewall reload
+   fi
+
+   /etc/init.d/dnsmasq restart
+
+fi
