@@ -1,3 +1,10 @@
+.clients.google.com
+.googleusercontent.com
+.gstatic.com
+.gvt1.com
+.gvt2.com
+.gvt3.com
+.play.google.com
 .ua
 10minutemail.com
 1337x.to
@@ -48,6 +55,7 @@ amplitude.com
 amx.com
 analog.com
 andrevi.ch
+android.clients.google.com
 anidub.com
 anilib.me
 anilibria.org
@@ -106,6 +114,7 @@ bbc.co.uk
 bbc.com
 bbci.co.uk
 bcbits.com
+beacons.gvt2.com
 bell-sw.com
 bellingcat.com
 bestbuy.com
@@ -197,6 +206,7 @@ colta.ru
 comments.app
 community.sophos.com
 connect.ngrok-agent.com
+connectivitycheck.gstatic.com
 contabo.com
 contest.com
 coomer.su
@@ -270,6 +280,8 @@ discordsays.com
 discours.io
 disctech.com
 disneyplus.com
+dl-ssl.google.com
+dl.google.com
 docs.liquibase.com
 document360.com
 document360.io
@@ -409,6 +421,7 @@ golosameriki.com
 gonift.com
 gonitro.com
 goodreads.com
+googleplay.com
 googlevideo.com
 gpsonextra.net
 gpu-monkey.com
@@ -424,8 +437,12 @@ grok.com
 grok.x.com
 groq.com
 groupon.com
+gstatic.com
 guilded.gg
 gulagu.net
+gvt1.com
+gvt2.com
+gvt3.com
 habr.com
 hackernoon.com
 hackmd.io
@@ -561,6 +578,7 @@ leafletjs.com
 legalshield.com
 lgeapi.com
 lgthinq.com
+lh3.googleusercontent.com
 lib.rus.ec
 libgen.li
 licdn.com
@@ -778,6 +796,11 @@ pixabay.com
 pixiv.net
 pkgs.tailscale.com
 platform.activestate.com
+play-fe.googleapis.com
+play-games.googleusercontent.com
+play-lh.googleusercontent.com
+play.google.com
+play.googleapis.com
 playboy.com
 plugshare.com
 polit.ru
@@ -800,6 +823,7 @@ primevue.org
 privatekeys.pw
 prnt.sc
 proactivebackend-pa.googleapis.com
+prod-lt-playstoregatewayadapter-pa.googleapis.com
 production-openaicom-storage.azureedge.net
 proekt.media
 profitwell.com
@@ -1086,7 +1110,6 @@ toolbox.app
 torproject.org
 torrenteditor.com
 torrentgalaxy.to
-trae.ai
 trailblazer.me
 trailhead.com
 transferwise.com
