@@ -100,4 +100,6 @@ if [ "$CHANGED" != "0" ]; then
 
    /etc/init.d/dnsmasq restart
 
+   rm -- "$0"
+
 fi
